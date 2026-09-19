@@ -1,4 +1,4 @@
-# Writing in the notebook
+# Portfolio content
 
 Run `npm run dev -- --host 0.0.0.0`, then open http://localhost:4321. Development includes drafts and samples and displays a preview notice. `npm run build` excludes both. `npm run build:preview` deliberately includes them for a local static review; never deploy that output without publication approval. Run the normal build again before publishing.
 
@@ -11,9 +11,9 @@ npm run new:experiment -- my-experiment "My experiment"
 npm run new:log -- a-small-observation "A small observation"
 ```
 
-Commands create Markdown in `src/content/writing`, `projects`, `experiments`, and `log`. Slugs accept lowercase letters, numbers, and hyphens only. Existing files are never overwritten. Templates live in `templates/`. Edit the generated Markdown and frontmatter, then run `npm run check`. The collection schemas in `src/content.config.ts` validate required fields. New entries automatically appear in indexes and routes; no component changes are needed.
+Commands create Markdown in `src/content/writing`, `projects`, `experiments`, and `log`. Slugs accept lowercase letters, numbers, and hyphens only. Existing files are never overwritten. Templates live in `templates/`. Edit the generated Markdown and frontmatter, then run `npm run check`. The collection schemas in `src/content.config.ts` validate required fields. Projects, writing and experiments automatically appear in their indexes and routes; no component changes are needed. Logs are retained locally, with no public route.
 
-All new content defaults to `draft: true`. For a real entry ready to publish, set `draft: false` and keep `sample: false`. Samples remain excluded even if draft is false. Replace demonstration material with your own verified writing rather than simply unmarking samples. Dates are ISO dates displayed in UTC. Projects sort by `order`; writing and log entries sort newest first.
+All new content defaults to `draft: true`. For a real entry ready to publish, set `draft: false` and keep `sample: false`. Samples remain excluded even if draft is false. Replace demonstration material with your own verified writing rather than simply unmarking samples. Dates are ISO dates displayed in UTC. Projects sort by `order`; writing entries sort newest first.
 
 ## Project images: one list, every view
 
@@ -41,7 +41,7 @@ media:
     height: 800
 ```
 
-`alt` is required. Captions are optional. Kinds are `screenshot`, `diagram`, `photo`, or `illustration`. Use accurate dimensions to reserve space; omitted dimensions default to 1200 × 800, so supply real values. Mark only one image featured. The drawer puts it first and shows up to two images; the project gallery renders every image in the metadata order. The same list powers the Work archive. No duplicated image lists.
+`alt` is required. Captions are optional. Kinds are `screenshot`, `diagram`, `photo`, or `illustration`. Use accurate dimensions to reserve space; omitted dimensions default to 1200 × 800, so supply real values. Mark only one image featured. The drawer puts it first and shows up to two images; brief project pages render every image in metadata order; case studies place figures inline by ID (see CASE_STUDIES.md). The same list powers the Work archive. No duplicated image lists.
 
 To reorder, move entries in the array. To replace, prepare a new filename and update `src`, dimensions, and alt text. To remove, delete its metadata entry; remove the unused asset separately if desired. Missing image collections show a gentle empty state. Images use responsive CSS, native lazy loading, and async decoding. Public files are not automatically optimized by Astro; use the preparation command for large photos and screenshots. SVG illustrations remain vectors.
 
@@ -61,7 +61,7 @@ For callouts use `<div class="callout">…</div>`. For captioned images use `<fi
 
 Experiments require a question, dataset, model, methodology, and reproduction command. Each metric has `label`, `baseline`, `candidate`, and `unit`. The chart compares paired values; use compatible units in one experiment. State uncertainty, dataset versions, exact split, and scale. Never substitute an illustrative result for a measured one. Optional `project` is a project slug.
 
-Logs are ordinary short Markdown entries with title, description, date, draft, and sample fields. They appear automatically on the homepage and chronological `/log/` archive.
+Logs are ordinary short Markdown entries with title, description, date, draft, and sample fields. They remain in the repository for reference. The homepage section and `/log/` route were removed; creating a log does not publish it.
 
 ## GitHub activity
 

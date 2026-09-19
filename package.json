@@ -1,5 +1,5 @@
 {
-  "name": "the-engineering-notebook",
+  "name": "moaz-portfolio",
   "type": "module",
   "version": "0.1.0",
   "private": true,
@@ -15,7 +15,8 @@
     "github:refresh": "node scripts/github.mjs",
     "build:preview": "CONTENT_PREVIEW=true astro build",
     "image:prepare": "node scripts/prepare-image.mjs",
-    "prebuild": "node scripts/github.mjs"
+    "prebuild": "node scripts/check-deployment.mjs && node scripts/github.mjs",
+    "audit:build": "node scripts/audit-build.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.1",
@@ -26,7 +27,11 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.5",
-    "typescript": "^5.9.2",
-    "sharp": "0.35.4"
+    "@types/node": "^22.20.4",
+    "sharp": "0.35.4",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

@@ -1,0 +1,18 @@
+---
+import type {CollectionEntry} from 'astro:content';
+import type {MarkdownHeading} from 'astro';
+import DocumentLayout from './DocumentLayout.astro';
+import Icon from '@/components/Icon.astro';
+import ReadingEnhancements from '@/components/ReadingEnhancements.astro';
+interface Props {project:CollectionEntry<'projects'>;headings:MarkdownHeading[];}
+const {project:p,headings}=Astro.props;
+const toc=headings.filter(h=>h.depth===2||h.depth===3);
+---
+<DocumentLayout title={p.data.title} description={p.data.summary} sample={p.data.sample} draft={p.data.draft}>
+<div class="project-byline"><span>{p.data.language}</span><a class="icon-link" href={p.data.repository}><Icon name="github"/>Source repository ↗</a></div>
+<div class="reading-layout">
+{toc.length>0&&<aside class="toc"><details open><summary>On this page</summary><ul>{toc.map(h=><li class:list={{indent:h.depth===3}}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></details></aside>}
+<article class="prose"><slot/><p class="end-note"><a href="/work/">← All projects</a></p></article>
+</div>
+</DocumentLayout>
+<ReadingEnhancements/>

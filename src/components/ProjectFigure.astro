@@ -1,0 +1,10 @@
+---
+import {getEntry} from 'astro:content';
+import {preview} from '@/lib/content';
+interface Props {project:string;id:string;}
+const {project,id}=Astro.props;
+const entry=await getEntry('projects',project);
+const item=entry?.data.media.find(m=>m.id===id);
+if(!item) throw new Error(`Missing project figure: ${project}/${id}`);
+---
+{(preview||!item.sample)&&<figure class="article-figure"><img src={item.src} alt={item.alt} width={item.width} height={item.height} loading="lazy" decoding="async"/>{item.caption&&<figcaption>{item.caption}</figcaption>}</figure>}

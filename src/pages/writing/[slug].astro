@@ -1,5 +1,6 @@
 ---
 import {render} from 'astro:content';
+import ReadingEnhancements from '@/components/ReadingEnhancements.astro';
 import DocumentLayout from '@/layouts/DocumentLayout.astro';
 import {entries} from '@/lib/content';
 export async function getStaticPaths(){return (await entries('writing')).map(p=>({params:{slug:p.id},props:{post:p}}));}
@@ -7,7 +8,4 @@ const {post:p}=Astro.props; const {Content,headings}=await render(p);
 const toc=headings.filter(h=>h.depth===2||h.depth===3);
 ---
 <DocumentLayout title={p.data.title} description={p.data.description} sample={p.data.sample} draft={p.data.draft}><div class="reading-layout"><aside class="toc"><details open><summary>On this page</summary><ul>{toc.map(h=><li class:list={{indent:h.depth===3}}><a href={`#${h.slug}`}>{h.text}</a></li>)}</ul></details></aside><article class="prose"><Content/><p class="end-note handwriting">a good place to pause.</p><a href="/writing/">← All writing</a></article></div></DocumentLayout>
-<script>
-const details=document.querySelector<HTMLDetailsElement>('.toc details');if(details&&matchMedia('(max-width: 800px)').matches)details.open=false;
-document.querySelectorAll<HTMLElement>('.prose pre').forEach(pre=>{const bar=document.createElement('div');bar.className='code-toolbar';const label=document.createElement('span');const code=pre.querySelector('code');label.textContent=pre.dataset.language||code?.className.replace('language-','')||'code';const button=document.createElement('button');button.type='button';button.textContent='Copy';button.setAttribute('aria-label','Copy code');button.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(code?.textContent||'');button.textContent='Copied';}catch{button.textContent='Select code to copy';}setTimeout(()=>button.textContent='Copy',2000);});bar.append(label,button);pre.before(bar);});
-</script>
+<ReadingEnhancements/>

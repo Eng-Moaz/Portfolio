@@ -1,0 +1,10 @@
+---
+import {getEntry} from 'astro:content';
+import {preview} from '@/lib/content';
+interface Props {group:string;}
+const {group}=Astro.props;
+const about=await getEntry('pages','about');
+const photos=about?.data.media.filter(m=>m.group===group&&(preview||!m.sample))??[];
+const slots=about?.data.photoSlots.filter(s=>s.group===group)??[];
+---
+{(photos.length>0||slots.length>0)&&<div class="snapshots">{photos.map(p=><figure><img src={p.src} alt={p.alt} width={p.width} height={p.height} loading="lazy" decoding="async"/>{p.caption&&<figcaption>{p.caption}</figcaption>}</figure>)}{slots.map(s=><figure class="photo-placeholder"><div aria-hidden="true"><span>照片</span><small>a photograph, soon</small></div><figcaption>Photo placeholder · {s.caption}</figcaption></figure>)}</div>}

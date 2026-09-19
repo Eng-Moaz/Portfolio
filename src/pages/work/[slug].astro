@@ -1,9 +1,13 @@
 ---
 import {render} from 'astro:content';
-import DocumentLayout from '@/layouts/DocumentLayout.astro';
+import ProjectArticleLayout from '@/layouts/ProjectArticleLayout.astro';
 import MediaGallery from '@/components/MediaGallery.astro';
 import {entries} from '@/lib/content';
 export async function getStaticPaths(){return (await entries('projects')).map(p=>({params:{slug:p.id},props:{project:p}}));}
-const {project:p}=Astro.props; const {Content}=await render(p);
+const {project:p}=Astro.props; const {Content,headings}=await render(p);
 ---
-<DocumentLayout title={p.data.title} description={p.data.summary} sample={p.data.sample} draft={p.data.draft}><div class="project-details"><p class="handwriting">{p.data.note}</p><p>{p.data.language} · <a href={p.data.repository}>Source repository ↗</a></p><ul>{p.data.facts.map(f=><li>{f}</li>)}</ul><div class="prose"><Content/></div></div><MediaGallery media={p.data.media}/><p><a href="/work/">← All projects</a></p></DocumentLayout>
+<ProjectArticleLayout project={p} headings={headings}>
+{!p.data.caseStudy&&<><p class="handwriting">{p.data.note}</p><ul>{p.data.facts.map(f=><li>{f}</li>)}</ul></>}
+<Content/>
+{!p.data.caseStudy&&<MediaGallery media={p.data.media}/>}
+</ProjectArticleLayout>

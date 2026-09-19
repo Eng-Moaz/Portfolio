@@ -1,0 +1,9 @@
+---
+import {render} from 'astro:content';
+import {entries} from '@/lib/content';
+import DocumentLayout from '@/layouts/DocumentLayout.astro';
+const about=(await entries('pages')).find(p=>p.id==='about');
+if(!about) throw new Error('The public About page requires src/content/pages/about.mdx');
+const {Content}=await render(about);
+---
+<DocumentLayout title={about.data.title} description={about.data.description} sample={about.data.sample} draft={about.data.draft}><article class="prose about-prose"><Content/></article></DocumentLayout>

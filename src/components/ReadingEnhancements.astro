@@ -1,0 +1,42 @@
+<script>
+const details = document.querySelector<HTMLDetailsElement>('.toc details');
+if (details && matchMedia('(max-width: 800px)').matches) details.open = false;
+document.querySelectorAll<HTMLElement>('.prose pre').forEach((pre, index) => {
+  const code = pre.querySelector('code');
+  const filename = pre.previousElementSibling?.matches('.filename') ? pre.previousElementSibling : null;
+  const wrapper = document.createElement('div');
+  wrapper.className = 'code-insert';
+  const bar = document.createElement('div');
+  bar.className = 'code-toolbar';
+  const label = document.createElement('span');
+  const language = pre.dataset.language || code?.className.replace('language-', '') || 'code';
+  label.textContent = filename?.textContent ? (filename.textContent.toLowerCase() === language.toLowerCase() ? filename.textContent : `${filename.textContent} · ${language}`) : language;
+  label.id = `code-label-${index}`;
+  pre.setAttribute('aria-labelledby', label.id);
+  pre.setAttribute('tabindex', '0');
+  pre.setAttribute('role', 'region');
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.textContent = 'Copy';
+  button.setAttribute('aria-label', `Copy ${filename?.textContent || language} code`);
+  const status = document.createElement('span');
+  status.className = 'sr-only';
+  status.setAttribute('aria-live', 'polite');
+  button.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(code?.textContent || '');
+      button.textContent = 'Copied';
+      status.textContent = 'Code copied to clipboard';
+    } catch {
+      button.textContent = 'Select to copy';
+      status.textContent = 'Clipboard unavailable. Select the code and copy manually.';
+    }
+    setTimeout(() => { button.textContent = 'Copy'; }, 2000);
+  });
+  bar.append(label, button, status);
+  pre.before(wrapper);
+  wrapper.append(bar, pre);
+  filename?.remove();
+});
+</script>
+

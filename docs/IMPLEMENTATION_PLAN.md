@@ -9,3 +9,18 @@
 7. Run checks, production/sample exclusion, content/image round trips, browser light/dark and responsive inspection. Verification results are recorded in QA.md.
 
 No deployment or GitHub push. Remaining personal inputs: contact email, publishable essays and log entries, additional original project screenshots, and the intended public domain. These do not block local visual review.
+
+## Final refinement pass
+
+- Preserve the existing composition and introduction; use authentic locally served SVG logo stickers. Completed.
+- Compare two syntax themes and select a warm, accessible pair. Completed: Notebook chosen over Rosé Pine.
+- Document tested selected-note Obsidian publishing without importing a vault. Completed.
+- Remove the homepage lab preview; preserve experiment data and routes. Completed.
+- Refine the contribution link and retain the compact engineering log. Completed.
+- Configure static Vercel build defaults, domain-aware metadata and build audit. Implemented; final build/verification recorded in QA.md.
+
+No deployment or push is authorized. Email can be added to src/lib/site.ts; the production domain is set via SITE_URL.
+
+## Final personal refinement pass
+
+Implemented personal identity, six smaller independently floating stickers, full-name underline, email/GitHub icons, About MDX with supplied chess/Chinese details, source-only log preservation, conditional real-PDF CV link, shared project article layout and a source-checked Deep Activity Recognition case study. Only that project’s narrative was rewritten. Authoring and deployment instructions updated; final checks recorded in QA.md.

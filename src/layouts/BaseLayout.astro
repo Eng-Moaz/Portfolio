@@ -5,6 +5,12 @@ import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import {preview} from '@/lib/content';
+import {contactEmail,cvPath} from '@/lib/site';
+import Icon from '@/components/Icon.astro';
+import {existsSync,statSync} from 'node:fs';
+import {resolve} from 'node:path';
+const cvFile=resolve('public',cvPath.slice(1));
+const hasCV=existsSync(cvFile)&&statSync(cvFile).isFile();
 
 interface Props {
   title?: string;
@@ -12,9 +18,11 @@ interface Props {
 }
 
 const {
-  title = 'The Engineering Notebook — Moaz Mohamed',
+  title = 'Moaz Mohamed',
   description = 'Field notes on software, machine learning, and the infrastructure behind them.',
 } = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const noindex = preview || import.meta.env.VERCEL_ENV === 'preview';
 ---
 
 <!doctype html>
@@ -25,6 +33,14 @@ const {
     <meta name="description" content={description} />
     <meta name="theme-color" content="#F7F4EB" />
     <title>{title}</title>
+    {canonical && <link rel="canonical" href={canonical}/>}
+    {noindex && <meta name="robots" content="noindex, nofollow"/>}
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="Moaz Mohamed"/>
+    <meta property="og:title" content={title}/>
+    <meta property="og:description" content={description}/>
+    {canonical && <meta property="og:url" content={canonical}/>}
+    <meta name="twitter:card" content="summary"/>
     <script is:inline>
       let savedTheme; try { savedTheme = localStorage.getItem('engineering-notebook-theme'); } catch {}
       const preferredTheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -32,10 +48,10 @@ const {
     </script>
   </head>
   <body>
-    <a class="skip-link" href="#main">Skip to the notebook</a>
-    <div class="page-tools"><ThemeToggle /></div>
+    <a class="skip-link" href="#main">Skip to main content</a>
+    <div class="page-tools">{hasCV && <a class="cv-link icon-link" href={cvPath} download><Icon name="download"/>Download CV</a>}<ThemeToggle /></div>
     {preview && <div class="preview-banner">Local preview · includes unpublished samples</div>}
     <slot />
-    <footer><p>A little corner of the internet.<br/><a href="/">Moaz's notebook</a> · <a href="https://github.com/Eng-Moaz">GitHub ↗</a></p><p class="handwriting">always room for one more idea.</p></footer>
+    <footer><p>A little corner of the internet.<br/><a href="/">Moaz Mohamed</a> · <a href="https://github.com/Eng-Moaz">GitHub ↗</a></p><div class="footer-note"><p class="handwriting">always room for one more idea.</p>{contactEmail && <a class="contact-link" href={`mailto:${contactEmail}`}>Say hello →</a>}</div></footer>
   </body>
 </html>

@@ -1,0 +1,139 @@
+---
+caseStudy: true
+draft: false
+sample: false
+title: Deep Activity Recognition
+repository: https://github.com/Eng-Moaz/Deep-Activity-Recognition
+summary: A PyTorch implementation of a hierarchical deep temporal model for group activity recognition on the Volleyball Dataset.
+language: Python · PyTorch
+order: 1
+note: "time, people, context — modeled together"
+facts:
+  - Implements a progression from image classification to a two-stage hierarchical temporal model.
+  - Uses ResNet-50 features, player-level modeling, team pooling, and temporal LSTMs.
+  - The repository documents reproducibility seeds, TensorBoard logs, and run metadata.
+media:
+  - id: architecture
+    src: /images/projects/deep-activity-recognition/architecture.webp
+    alt: Repository architecture diagram showing player features and temporal LSTMs across three volleyball frames
+    caption: Hierarchical person-to-group modeling, reproduced from the repository architecture diagram. The underlying research is by Ibrahim et al., CVPR 2016.
+    kind: diagram
+    featured: true
+    width: 1200
+    height: 551
+  - id: b1-confusion
+    src: /images/projects/deep-activity-recognition/confusion-matrix.webp
+    alt: Confusion matrix saved under the baseline b1 checkpoint in the repository
+    caption: Saved B1 full-frame classifier confusion matrix from the repository. This is a baseline artifact, not the B8 hierarchical model’s evaluation.
+    kind: diagram
+    width: 1000
+    height: 800
+evidenceStatus: documented
+---
+
+import ProjectFigure from '../../components/ProjectFigure.astro';
+
+## From individual actions to a team activity
+
+Recognizing a volleyball activity means connecting what individual players are doing with what is happening across the court. A full-frame classifier provides a useful starting point; a temporal hierarchy gives the model a way to represent people and the group over several frames.
+
+This is my PyTorch implementation of [*A Hierarchical Deep Temporal Model for Group Activity Recognition*](https://www.cv-foundation.org/openaccess/content_cvpr_2016/html/Ibrahim_A_Hierarchical_Deep_CVPR_2016_paper.html), by Ibrahim, Muralidharan, Deng, Vahdat and Mori (CVPR 2016). The research and original hierarchical idea belong to those authors. My repository implements a sequence of baselines using ResNet-50 features in place of the paper’s AlexNet backbone, with a shared training pipeline and a video demonstration.
+
+The implementation progresses from image classification to player features, temporal modeling and team-aware pooling. That progression makes it possible to inspect what each part adds, while keeping the differences between this implementation and the original experiment explicit. [Repository overview][readme]
+
+## The data moving through the system
+
+The code uses the Volleyball Dataset, with eight group labels: left and right versions of pass, spike, set and winpoint. The scene loader defines disjoint video-ID lists containing 24 training, 15 validation and 16 test videos. Its temporal modes read nine frames centered on an annotated clip. Player crops come from supplied tracking annotations; this pipeline does not learn a player detector.
+
+For player-feature extraction, each frame is padded or truncated to 12 crops. Crops are resized to 224 × 224, normalized, and passed through the trained ResNet backbone. The resulting feature tensor has shape `(9, 12, 2048)` per clip: time, player slots, feature channels. Frame-level extraction instead produces `(9, 2048)`. The two representations are saved separately for downstream experiments. [Dataset loader][dataset] · [Feature extraction][extract]
+
+## A hierarchy of representations
+
+The first learned stage fine-tunes ResNet-50 to classify individual player actions. Its classification head is then removed to extract 2,048-dimensional player features. These cached features feed the group classifiers, separating the expensive visual backbone work from the downstream temporal experiments. [Person classifier][b3] · [Feature extraction][extract]
+
+For B8, the intended temporal flow is a player LSTM, max pooling within two six-player groups, concatenation of those group representations, and a scene LSTM. The final scene state goes through a fully connected classifier to predict one of the eight activities. The configuration uses 2,048 hidden units at each LSTM level. The tensor-layout and grouping assumptions in the current source deserve attention before treating this as a faithful reproduction; I discuss them below. [B8 model][b8] · [B8 configuration][config]
+
+<ProjectFigure project="deep-activity-recognition" id="architecture" />
+
+The baseline ladder provides useful comparisons: B1 classifies a whole frame; B3 pools person features; B4 models a sequence of whole-frame features; B6 pools player features before a scene LSTM. The current B7 source contains both player and scene LSTMs with global player pooling, while B8 pools the two groups separately. The README’s results table describes B7 as “without LSTM 2,” which disagrees with that source. The descriptions here follow the inspected code. [B7 model][b7] · [README][readme]
+
+## Training, checkpoints and a video demo
+
+The dependency order matters: train a backbone before extracting its features, and extract features before training the models that consume them. This is the repository’s B8 path, assuming the dataset, dependencies and GPU environment are already prepared:
+
+```bash
+export VOLLEYBALL_VIDEOS_DIR="/path/to/videos"
+export VOLLEYBALL_TRACKS_DIR="/path/to/tracking_annotations"
+
+python -m modeling.b3.train --stage 1
+python scripts/extract_features.py --mode player \
+  --checkpoint checkpoints/b3/best_model_b3_stg1.pth
+python -m modeling.b8.train
+```
+
+The shared engine trains and validates each epoch, selects the checkpoint with the best validation accuracy, reloads it, and evaluates the held-out test loader. It writes TensorBoard curves and run metadata. B8’s checked-in defaults use AdamW, a learning rate of `1e-4`, batch size 64, up to 30 epochs and gradient clipping at 1.0. These are configuration defaults, not proof of the exact settings behind every reported score. [Training engine][engine] · [B8 configuration][config]
+
+The demo reads a dataset clip and its existing tracking boxes, extracts features over sliding nine-frame windows, and overlays individual action labels and a group prediction. This is an annotated-clip demonstration, rather than an end-to-end detector for arbitrary uploaded videos. [Demo implementation][demo]
+
+```bash
+python scripts/demo_inference.py \
+  --video_id 4 --clip_id 29211 \
+  --backbone_ckpt checkpoints/b3/best_model_b3_stg1.pth \
+  --model_ckpt checkpoints/b8/best_model_b8.pth \
+  --output demo.mp4 --fps 10
+```
+
+## The practical challenge: getting training done
+
+One of my main challenges was the training process itself. I worked with Kaggle and Colab before finding Lightning AI, where I had access to powerful GPUs for the project. Choosing a workable training environment became part of the engineering work alongside building the models.
+
+The code also illustrates a useful trade-off: storing CNN features avoids repeating visual feature extraction for every downstream experiment, but couples those experiments to the chosen backbone checkpoint and preprocessing. Changing either means regenerating the features. That is a consequence of this pipeline design, rather than a claim about a specific failure I encountered. [Feature extraction][extract]
+
+## Results, with their limits
+
+The README reports the following implementation accuracies. They are repository-reported figures; this case study does not independently reproduce the training runs or certify the benchmark comparison. [Results table][readme]
+
+| Baseline | Reported accuracy |
+| --- | ---: |
+| B1 | 73.73% |
+| B3 | 81.60% |
+| B4 | 76.29% |
+| B6 | 80.03% |
+| B7 | 86.54% |
+| B8 | 88.86% |
+
+The repository’s evaluator computes top-1 accuracy from predicted and true labels, prints a per-class classification report, and saves a confusion matrix. The figure below is the committed **B1** matrix. It provides a concrete baseline artifact, but cannot establish B8’s score. [Evaluation code][evaluation] · [Original B1 matrix][matrix]
+
+<ProjectFigure project="deep-activity-recognition" id="b1-confusion" />
+
+The original paper and this implementation use different visual backbones, and the repository has implementation differences noted above. Higher README numbers alone therefore do not isolate an improvement to the original temporal architecture. Saved B1 metadata also references an earlier commit (`4dea068`); current source defaults should not be presented as the exact configuration of that historical run. [B1 run metadata][metadata]
+
+## What I take forward
+
+The training experience made the practical side of the project clear: the compute environment is part of getting an experiment finished. For a next iteration, the most useful technical work would be to make the following assumptions explicit and test them before rerunning the comparison.
+
+**Preserve player identity through time.** The B8 input is documented as `(batch, time, players, features)`, but the source directly reshapes it into `(batch × players, time, features)` without first swapping the time and player axes. A reshape does not perform that swap. This mixes the intended player sequences and needs an ordering test and correction before claiming faithful per-player temporal modeling. [B8 forward pass][b8]
+
+**Make team assignment explicit.** The temporal scene loader appends boxes in annotation order, pads missing crops, and does not preserve player IDs in the returned tensor. B8 then treats the first six slots as one team and the remaining six as the other. Stable identities, explicit team membership and padding masks would make that contract inspectable instead of implicit. [Scene loader][dataset] · [Team pooling][b8]
+
+**Tie each result to a complete run.** The project records seeds, configuration and a Git revision, which is a useful foundation. In the inspected B8 entry point, however, the model is constructed before the training engine sets the seed; deterministic execution is also disabled by default. Moving seed setup before initialization and saving the final metrics alongside each checkpoint would strengthen repeatability. These are proposed follow-ups, not completed fixes or new experimental results. [B8 training entry point][train] · [Reproducibility utilities][repro]
+
+## Sources and scope
+
+This article describes repository revision [`1c7160a`][revision]. The training-platform experience above comes from my own account; technical descriptions and reported results are linked to source. The two figures are existing repository artifacts. No new training run, latency measurement, hardware benchmark or model correction was performed for this article.
+
+[readme]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/README.md
+[dataset]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/data_utils/dataset.py
+[extract]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/scripts/extract_features.py
+[b3]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/modeling/b3/model.py
+[b7]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/modeling/b7/model.py
+[b8]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/modeling/b8/model.py
+[config]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/modeling/b8/config.py
+[train]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/modeling/b8/train.py
+[engine]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/training/engine.py
+[demo]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/scripts/demo_inference.py
+[evaluation]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/helper_utils/evaluation.py
+[matrix]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/checkpoints/b1/confusion_matrix.png
+[metadata]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/checkpoints/b1/run_metadata.json
+[repro]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/blob/1c7160a349997d29eae9673faaaca7c13e15fb42/training/reproducibility.py
+[revision]: https://github.com/Eng-Moaz/Deep-Activity-Recognition/tree/1c7160a349997d29eae9673faaaca7c13e15fb42

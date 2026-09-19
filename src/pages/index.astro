@@ -3,16 +3,15 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import Constellation from '@/components/Constellation.astro';
 import ProjectDrawer from '@/components/ProjectDrawer.astro';
 import Contributions from '@/components/Contributions.astro';
+import Icon from '@/components/Icon.astro';
+import {contactEmail} from '@/lib/site';
 import {entries,dateLabel} from '@/lib/content';
 const projects=(await entries('projects')).sort((a,b)=>a.data.order-b.data.order);
 const posts=(await entries('writing')).sort((a,b)=>+b.data.date-+a.data.date);
-const experiments=await entries('experiments');
-const logs=(await entries('log')).sort((a,b)=>+b.data.date-+a.data.date);
 ---
 <BaseLayout><main id="main">
-<section class="intro"><div class="intro-copy"><p class="notebook-label">The engineering notebook</p><p class="handwriting hello">hello, I'm</p><h1>Moaz <span class="name-mark">Mohamed<svg viewBox="0 0 400 20" aria-hidden="true"><path d="M4 12Q148 1 395 10M19 17Q216 9 378 15"/></svg></span></h1><p class="intro-lede">I build software and machine-learning systems.<br class="desktop-break"/> Then I pull at the threads underneath.</p><p class="intro-aside">A place for things I make, questions I follow,<br class="desktop-break"/> and notes I don't want to lose.</p><div class="intro-links"><a class="circled" href="https://github.com/Eng-Moaz">GitHub ↗</a><a class="handwriting" href="#work">take a look around ↴</a></div></div><Constellation/></section>
+<section class="intro"><div class="intro-copy"><p class="handwriting hello">hello, I'm</p><h1><span class="name-mark">Moaz Mohamed<svg preserveAspectRatio="none" viewBox="0 0 400 20" aria-hidden="true"><path pathLength="1" d="M4 12Q148 1 395 10M19 17Q216 9 378 15"/></svg></span></h1><p class="intro-lede">I build software and machine-learning systems.<br class="desktop-break"/> Then I pull at the threads underneath.</p><p class="intro-aside">A place for things I make, questions I follow,<br class="desktop-break"/> and notes I don't want to lose.</p><div class="intro-links"><a class="icon-link" href="https://github.com/Eng-Moaz"><Icon name="github"/>GitHub ↗</a>{contactEmail && <a class="icon-link" href={`mailto:${contactEmail}`}><Icon name="mail"/>Email</a>}<a class="handwriting about-link" href="/about/">A little more about me ↗</a></div></div><Constellation/></section>
 <ProjectDrawer projects={projects.slice(0,4)}/>
 <section class="writing-section" id="writing"><div class="section-heading-row"><h2>Some notes worth keeping.</h2><a class="handwriting" href="/writing/">read my notes →</a></div><div class="writing-list">{posts.slice(0,3).map(p=><a class="writing-row" href={`/writing/${p.id}/`}><div><small class="content-label">{p.data.sample?'Sample essay · not published':p.data.draft?'Draft':dateLabel(p.data.date)}</small><h3>{p.data.title}</h3><p>{p.data.description}</p></div><span aria-hidden="true">↗</span></a>)}{!posts.length&&<p>Pages are still being written. Come back for the next note.</p>}</div></section>
-<section class="compact-notes"><article><h2>From the lab</h2><p class="handwriting">a question, a test, another question.</p>{experiments.slice(0,1).map(p=><div><small class="content-label">{p.data.sample?'Sample experiment':p.data.draft?'Draft':'Experiment'}</small><h3><a href={`/experiments/${p.id}/`}>{p.data.title} ↗</a></h3><p>{p.data.question}</p><div class="mini-trace" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>)}<a href="/experiments/">Explore the experiments →</a></article><article><h2>Lately, in the margins</h2>{logs.slice(0,3).map(p=><div class="log-preview"><small>{dateLabel(p.data.date)}{p.data.sample?' · Example':''}</small><a href={`/log/#${p.id}`}>{p.data.title}</a></div>)}<a href="/log/">Open the engineering log →</a></article></section>
 <Contributions/>
 </main></BaseLayout>
