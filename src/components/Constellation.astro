@@ -1,0 +1,9 @@
+<div class="constellation" aria-hidden="true">
+  <svg viewBox="0 0 400 310"><path d="M48 162C4 42 327 10 357 140S101 294 48 162Z"/><path d="M99 41C211-8 349 246 253 276S36 97 99 41Z"/><path class="pencil" d="M171 145l13-25 9 25 27 5-23 14 1 27-18-20-27 6 15-22Z"/></svg>
+  <span class="sticker docker">Docker</span><span class="sticker torch">PyTorch</span><span class="sticker go">Go</span><span class="sticker linux">Linux</span>
+  <span class="orbit-note handwriting">a few things in my orbit</span>
+</div>
+<script>
+const constellation=document.querySelector<HTMLElement>('.constellation');
+if(constellation){const observer=new IntersectionObserver(([entry])=>{constellation.classList.toggle('orbit-paused',!entry.isIntersecting);});observer.observe(constellation);}
+</script>

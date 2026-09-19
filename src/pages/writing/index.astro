@@ -1,0 +1,6 @@
+---
+import DocumentLayout from '@/layouts/DocumentLayout.astro';
+import {entries,dateLabel} from '@/lib/content';
+const posts=(await entries('writing')).sort((a,b)=>+b.data.date-+a.data.date);
+---
+<DocumentLayout title="Notes worth keeping" description="Working things out, one page at a time."><div class="writing-list">{posts.map(p=><a class="writing-row" href={`/writing/${p.id}/`}><div><small class="content-label">{p.data.sample?'Sample essay · not published':p.data.draft?'Draft':dateLabel(p.data.date)}</small><h2>{p.data.title}</h2><p>{p.data.description}</p></div><span>↗</span></a>)}{!posts.length&&<p>No published notes yet.</p>}</div></DocumentLayout>

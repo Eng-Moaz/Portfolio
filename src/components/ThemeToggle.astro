@@ -1,0 +1,15 @@
+<button class="theme-toggle" type="button" aria-label="Switch color theme" data-theme-toggle>
+  <span aria-hidden="true" class="theme-toggle__sun">☼</span>
+  <span aria-hidden="true" class="theme-toggle__moon">☾</span>
+</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
+  button?.addEventListener('click', () => {
+    const current = document.documentElement.dataset.theme;
+    const next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    try { localStorage.setItem('engineering-notebook-theme', next); } catch {}
+    button.setAttribute('aria-label', `Switch to ${next === 'dark' ? 'light' : 'dark'} theme`);
+  });
+</script>

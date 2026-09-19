@@ -1,0 +1,41 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/jetbrains-mono';
+import '../styles/global.css';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+import {preview} from '@/lib/content';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'The Engineering Notebook — Moaz Mohamed',
+  description = 'Field notes on software, machine learning, and the infrastructure behind them.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#F7F4EB" />
+    <title>{title}</title>
+    <script is:inline>
+      let savedTheme; try { savedTheme = localStorage.getItem('engineering-notebook-theme'); } catch {}
+      const preferredTheme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = savedTheme || preferredTheme;
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to the notebook</a>
+    <div class="page-tools"><ThemeToggle /></div>
+    {preview && <div class="preview-banner">Local preview · includes unpublished samples</div>}
+    <slot />
+    <footer><p>A little corner of the internet.<br/><a href="/">Moaz's notebook</a> · <a href="https://github.com/Eng-Moaz">GitHub ↗</a></p><p class="handwriting">always room for one more idea.</p></footer>
+  </body>
+</html>

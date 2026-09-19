@@ -1,0 +1,7 @@
+---
+import {render} from 'astro:content';
+import DocumentLayout from '@/layouts/DocumentLayout.astro';
+import {entries,dateLabel} from '@/lib/content';
+const logs=await Promise.all((await entries('log')).sort((a,b)=>+b.data.date-+a.data.date).map(async p=>({...p,...await render(p)})));
+---
+<DocumentLayout title="In the margins" description="An engineering log. Short entries, loose ends, things to revisit."><div class="log-archive">{logs.map(p=><article id={p.id}><small>{dateLabel(p.data.date)} · {p.data.sample?'Example entry':p.data.draft?'Draft':'Note'}</small><h2>{p.data.title}</h2><div class="prose"><p.Content/></div></article>)}{!logs.length&&<p>No published entries yet.</p>}</div></DocumentLayout>

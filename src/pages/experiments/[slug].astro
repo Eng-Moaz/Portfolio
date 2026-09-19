@@ -1,0 +1,9 @@
+---
+import {render} from 'astro:content';
+import DocumentLayout from '@/layouts/DocumentLayout.astro';
+import {entries} from '@/lib/content';
+export async function getStaticPaths(){return (await entries('experiments')).map(p=>({params:{slug:p.id},props:{experiment:p}}));}
+const {experiment:p}=Astro.props;const {Content}=await render(p);
+const max=Math.max(1,...p.data.metrics.flatMap(m=>[m.baseline,m.candidate]));
+---
+<DocumentLayout title={p.data.title} description={p.data.question} sample={p.data.sample} draft={p.data.draft}><article class="prose experiment"><dl><dt>Model</dt><dd>{p.data.model}</dd><dt>Dataset</dt><dd>{p.data.dataset}</dd><dt>Evaluation</dt><dd>{p.data.methodology}</dd></dl><h2>What changed?</h2>{p.data.sample&&<p class="callout">Illustrative values only. These are not measured results or Moaz's achievements.</p>}<div class="table-scroll"><table><thead><tr><th>Metric</th><th>Baseline</th><th>Candidate</th></tr></thead><tbody>{p.data.metrics.map(m=><tr><th>{m.label} ({m.unit})</th><td>{m.baseline}</td><td>{m.candidate}</td></tr>)}</tbody></table></div><figure class="comparison"><figcaption>{p.data.sample?'Sample comparison':'Metric comparison'} · baseline / candidate</figcaption>{p.data.metrics.map(m=><div class="bar-pair"><span>{m.label}</span><div aria-label={`Baseline ${m.baseline}, candidate ${m.candidate} ${m.unit}`}><i style={`width:${m.baseline/max*100}%`}></i><i style={`width:${m.candidate/max*100}%`}></i></div></div>)}</figure><Content/><h2>Reproduction</h2><p>{p.data.sample?'Example command for the demonstration protocol; no completed run is claimed.':'Run from the documented project environment.'}</p><pre><code>{p.data.command}</code></pre>{p.data.project&&<p><a href={`/work/${p.data.project}/`}>Related project →</a></p>}<a href="/experiments/">← All experiments</a></article></DocumentLayout>

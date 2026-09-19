@@ -1,0 +1,11 @@
+import { defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { z } from 'astro/zod';
+const publication = { draft: z.boolean().default(true), sample: z.boolean().default(false) };
+const media = z.object({ src: z.string().startsWith('/images/'), alt: z.string().min(1), caption: z.string().optional(), kind: z.enum(['screenshot','diagram','photo','illustration']).default('screenshot'), featured: z.boolean().default(false), sample: z.boolean().default(false), width: z.number().positive().default(1200), height: z.number().positive().default(800) });
+const projects = defineCollection({ loader: glob({pattern:'**/*.{md,mdx}',base:'./src/content/projects'}), schema: z.object({ ...publication, title:z.string(), repository:z.url(), summary:z.string(), language:z.string(), order:z.number().int().positive(), note:z.string(), facts:z.array(z.string()).min(1), evidenceStatus:z.enum(['documented','partial','missing']), media:z.array(media).default([]) }) });
+const editorial = { ...publication, title:z.string(), description:z.string(), date:z.coerce.date(), tags:z.array(z.string()).default([]) };
+const writing = defineCollection({loader:glob({pattern:'**/*.{md,mdx}',base:'./src/content/writing'}),schema:z.object(editorial)});
+const experiments = defineCollection({loader:glob({pattern:'**/*.{md,mdx}',base:'./src/content/experiments'}),schema:z.object({...editorial, question:z.string(), dataset:z.string(), model:z.string(), methodology:z.string(), command:z.string(), project:z.string().optional(), metrics:z.array(z.object({label:z.string(),baseline:z.number(),candidate:z.number(),unit:z.string()})).default([])})});
+const log = defineCollection({loader:glob({pattern:'**/*.md',base:'./src/content/log'}),schema:z.object(editorial)});
+export const collections = { projects, writing, experiments, log };

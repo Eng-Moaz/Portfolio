@@ -1,0 +1,6 @@
+---
+import DocumentLayout from '@/layouts/DocumentLayout.astro';
+import {entries} from '@/lib/content';
+const experiments=await entries('experiments');
+---
+<DocumentLayout title="From the lab" description="Small experiments. Explicit assumptions. More questions.">{experiments.map(p=><a class="writing-row" href={`/experiments/${p.id}/`}><div><small class="content-label">{p.data.sample?'Sample experiment':p.data.draft?'Draft':'Experiment'}</small><h2>{p.data.title}</h2><p>{p.data.question}</p></div><span>↗</span></a>)}{!experiments.length&&<p>No published experiments yet.</p>}</DocumentLayout>
