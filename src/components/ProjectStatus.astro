@@ -1,0 +1,7 @@
+---
+import type {CollectionEntry} from 'astro:content';
+interface Props {status?:CollectionEntry<'projects'>['data']['status'];}
+const {status}=Astro.props;
+const labels={'in-progress':'In progress',complete:'Complete',archived:'Archived'};
+---
+{status&&<span class="project-status">{labels[status]}</span>}

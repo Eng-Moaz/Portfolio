@@ -115,3 +115,10 @@ The preparation script is optional. Astro still performs final build-time optimi
 The Docker, PyTorch, Go, Kubernetes, AWS, Terraform, and GitHub SVGs in `public/images/logos/` come from Devicon v2.17.0; its MIT license is included at `public/images/logos/DEVICON-LICENSE.txt`. Logos identify technologies and do not imply endorsement.
 
 The Deep Activity Recognition architecture and confusion matrix are existing repository artifacts pinned and attributed in that case study. Their current public paths are retained for backward compatibility. New project media should use `src/assets` unless a stable unprocessed URL is specifically required.
+
+
+## Final refinement assets
+
+- `src/assets/about/modaresy.jpg`: photograph supplied by Moaz, integrated without cropping and optimized by the existing Astro media component. Caption and story use his supplied context.
+- `src/assets/favicon/github-avatar.png`: profile avatar downloaded from `https://avatars.githubusercontent.com/u/156330236?v=4`, discovered through `https://api.github.com/users/Eng-Moaz`. `scripts/prepare-favicon.mjs` produces the local public favicon and Apple icon outputs. No runtime avatar fetch, added icon package or generated portrait.
+- Chinese photos and all existing certificate assets retained. No fake DocMesh screenshot or new certificate was added.

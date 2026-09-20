@@ -45,3 +45,16 @@ No push or deployment performed. Native clipboard contents were not independentl
 - Project generator now rejects an existing MDX sibling as well as an existing Markdown file. Attempting to create the converted activity-recognition slug returned “Already exists as MDX” without writing.
 - Case study reviewed against public revision `1c7160a349997d29eae9673faaaca7c13e15fb42`. Supplied training-platform story included. Results explicitly repository-reported; no GPU experiment or benchmark reproduction performed. Source limitations are described, not silently repaired in an unrelated repository.
 - No deployment, push or commit performed. No CV file or temporary QA artifacts included.
+
+## Latest-code portfolio iteration — 20 September 2026
+
+This pass starts from `7aa72d6` and supersedes earlier notes about absent photos, certificates, CV and unpublished case studies. Those user-supplied additions are present and preserved.
+
+- `npm run check` and final `npm run build` passed: 36 checked files, zero type-check errors/warnings/hints, 12 static pages and 33 optimized images. The two existing MDX/Rolldown directive warnings remain. The network-restricted GitHub refresh retained the valid cache.
+- `npm run audit:build` passed all 206 internal links/assets/fragments. Additional assertions verified the four local favicon declarations on every page, valid 16/32/48 ICO entries, DocMesh/status in home/archive/article, and removal of both requested sentences. The favicon image was visually inspected at 32px; native browser tab chrome is not exposed by this browser bridge.
+- Production browser: DocMesh status visible in its article and Work archive; five homepage project tabs; mobile dark article and certificates fit the 375px content viewport without horizontal overflow. All three existing certificate thumbnails loaded. No browser warning/error entries appeared in the final inspected pages.
+- About: correct Engineering → Modaresy → Linux order; full-frame Modaresy photograph; desktop Chinese layout retained. Chinese pair inspected at 390px and 320px viewports, with no page overflow, contained images and readable captions. Dark mobile pair inspected again in production; opening its full-size photograph successfully loaded a 1200px image.
+- Certificate resilience: temporarily pointed an existing entry at absent thumbnail/PDF files, built successfully, and verified the title/credential remained while broken assets/links were omitted. Original metadata restored before the final build. Both existing Coursera credential URLs returned HTTP 200 after redirects.
+- Existing certificate entries, writing, four prior project articles, constellation/calendar components and syntax themes were verified unchanged by this pass. No fabricated certificate entry was inferred from the unregistered Deep Learning Specialization PDF.
+- DocMesh researched at revision `0c9206e3fa65e63ca9647c9928053012d5a102b8`. Article distinguishes current single-page implementation from the user's proposed judge/evaluator pipeline and broader vision. No external inference or benchmark was run.
+- No commit, push or deployment performed. Production preview: `http://localhost:4323/`.

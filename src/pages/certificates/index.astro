@@ -1,15 +1,16 @@
 ---
 import {Image} from 'astro:assets';
+import {certificateThumbnail,certificateFile} from '@/lib/certificate-assets';
 import DocumentLayout from '@/layouts/DocumentLayout.astro';
 import {entries,dateLabel} from '@/lib/content';
-const certificates=(await entries('certificates')).sort((a,b)=>+b.data.date-+a.data.date);
+const certificates=(await entries('certificates')).sort((a,b)=>+b.data.date-+a.data.date).map(c=>({...c,thumbnail:certificateThumbnail(c.data.thumbnail),pdf:certificateFile(c.data.pdf),imageFile:certificateFile(c.data.imageFile)}));
 const certificateDate=(date:Date,precision:'day'|'month')=>precision==='month'
   ? date.toLocaleDateString('en-GB',{month:'short',year:'numeric',timeZone:'UTC'})
   : dateLabel(date);
 ---
 <DocumentLayout title="Certificates, with context" description="A small collection of learning milestones and the work around them.">
-{certificates.length>0 ? <div class="certificate-list">{certificates.map(c=><article class="certificate-entry">
-  {c.data.thumbnail&&<figure><Image src={c.data.thumbnail} alt={`Preview of ${c.data.title}`} widths={[400,720]} sizes="(max-width: 700px) 100vw, 320px" loading="lazy"/></figure>}
-  <div><p class="handwriting">{c.data.issuer} · {certificateDate(c.data.date,c.data.datePrecision)}</p><h2>{c.data.title}</h2><p>{c.data.description}</p><div class="certificate-links">{c.data.credentialUrl&&<a href={c.data.credentialUrl}>Verify credential ↗</a>}{c.data.pdf&&<a href={c.data.pdf}>View certificate PDF →</a>}{c.data.imageFile&&<a href={c.data.imageFile}>View certificate image →</a>}</div></div>
+{certificates.length>0 ? <div class="certificate-list">{certificates.map(c=><article class:list={["certificate-entry",{"certificate-entry--text":!c.thumbnail}]}>
+  {c.thumbnail&&<figure><Image src={c.thumbnail} alt={`Preview of ${c.data.title}`} widths={[400,720]} sizes="(max-width: 700px) 100vw, 320px" loading="lazy"/></figure>}
+  <div><p class="handwriting">{c.data.issuer} · {certificateDate(c.data.date,c.data.datePrecision)}</p><h2>{c.data.title}</h2><p>{c.data.description}</p><div class="certificate-links">{c.data.credentialUrl&&<a href={c.data.credentialUrl}>Verify credential ↗</a>}{c.pdf&&<a href={c.pdf}>View certificate PDF →</a>}{c.imageFile&&<a href={c.imageFile}>View certificate image →</a>}</div></div>
 </article>)}</div> : <div class="certificate-empty"><p class="handwriting">the shelf is ready</p><h2>No public certificates yet</h2><p>I’ll add an entry when I have a certificate and its context that I’m comfortable publishing. Nothing private or sample-shaped is shown here.</p></div>}
 </DocumentLayout>

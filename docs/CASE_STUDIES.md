@@ -2,7 +2,7 @@
 
 Create a draft with `npm run new:project -- my-project "My project"`. The generic Markdown template includes a narrative outline. Replace the placeholder repository profile URL with the actual repository URL, and supply verified metadata. New content stays unpublished until `draft: false` and `sample: false`.
 
-Set `caseStudy: true` to render the body as the full article without automatically appending facts and a large gallery. The same `media` array supplies the homepage drawer and Work archive. All four current projects use this system: Deep Activity Recognition demonstrates media-rich MDX; Chirpy, NYC Taxi Trip Duration, and Production RAG Engine demonstrate text-first Markdown. An empty `media: []` is valid and automatically selects the compact text layout.
+Set `caseStudy: true` to render the body as the full article without automatically appending facts and a large gallery. The same `media` array supplies the homepage drawer and Work archive. The project collection uses this system: Deep Activity Recognition demonstrates media-rich MDX; Chirpy, NYC Taxi Trip Duration, and Production RAG Engine demonstrate text-first Markdown. An empty `media: []` is valid and automatically selects the compact text layout.
 
 For figures drawn from shared metadata, rename the generated `.md` to `.mdx`, add an `id` to each media entry, and import the reusable helper:
 
@@ -50,3 +50,26 @@ Run `npm run check`, inspect the article in development, then `npm run build && 
 - Chirpy: revision `8f43a5c1d1959572e19df14bd3cb4dda70721641`; reviewed routes, chirp/user/refresh handlers, auth helpers, migrations, SQL queries, and generated database boundary.
 - NYC Taxi Trip Duration: revision `8d87bc8c479dcb8cec075f3a5f7f8eaf158b2309`; reviewed preprocessing, CLI modeling workflow, and checked-in baseline/candidate/test results. The case study documents target leakage from speed features derived from `trip_duration`; the metrics are not presented as valid benchmark performance.
 - Production RAG Engine: repository `Eng-Moaz/rag-search-engine`, revision `0028b2d4052c24feaedce82c3a649353ff6481bf`; reviewed the inverted index and BM25 implementation, MiniLM and chunk search, weighted and RRF fusion, query enhancement, three rerankers, golden-set evaluation, Groq-backed generation, multimodal search, dependencies, and checked-in logs. The article does not imply a deployment merely because “Production” is in the portfolio title.
+
+
+## DocMesh (in progress)
+
+The case study is **`src/content/projects/docmesh.md`**. Its `status: in-progress` drives the label in the homepage preview, Work archive and article header. The homepage now passes the sorted collection to the existing drawer without a four-entry cap, so DocMesh appears without removing any existing project.
+
+Reviewed revision: `0c9206e3fa65e63ca9647c9928053012d5a102b8`. Read the vision, all Go handlers/middleware/utilities, Python entry point/model integration/scraper, frontend HTML/JS/CSS, dependency manifests and local Taskfile. The implemented path is a synchronous single-URL question request, not a crawler or indexed knowledge workspace. The judge/evaluator LLM idea and personal difficulty choosing relevant links/stopping points were supplied by Moaz and are identified as proposed work. No paid inference, benchmark, deployment or backend modification was performed.
+
+To add screenshots, put real images in `src/assets/projects/docmesh/` and replace `media: []` with entries such as:
+
+```yaml
+media:
+  - id: source-input
+    image: ../../assets/projects/docmesh/source-input.webp
+    alt: Describe the actual screen
+    caption: Explain the implemented feature shown
+    kind: screenshot
+    featured: true
+    width: 1200
+    height: 800
+```
+
+Use the actual filename and dimensions. The homepage and Work archive automatically switch from text-only to image previews. For a contextual figure in the article itself, rename `docmesh.md` to `docmesh.mdx`, import `ProjectFigure` as documented above, and place `<ProjectFigure project="docmesh" id="source-input" />` near its explanation. No Astro layout edits are needed. Do not leave both the .md and .mdx files with the same slug.

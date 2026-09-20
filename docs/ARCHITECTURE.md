@@ -4,13 +4,13 @@ Astro 7 static output, strict TypeScript, typed Content Collections, Markdown/MD
 
 ## Collections and routes
 
-`src/content.config.ts` defines projects, writing, experiments and log. `src/lib/content.ts` centralizes publication filtering. Every index, homepage preview, and `getStaticPaths` uses it. Development or explicit `CONTENT_PREVIEW=true` includes drafts/samples; a normal production build excludes either flag. Projects carry verified facts and one structured media array. Experiments carry protocol and paired metrics; writing and log use dated editorial fields.
+`src/content.config.ts` defines projects, writing, experiments, log, pages and certificates. `src/lib/content.ts` centralizes publication filtering. Every index, homepage preview, and `getStaticPaths` uses it. Development or explicit `CONTENT_PREVIEW=true` includes drafts/samples; a normal production build excludes either flag. Projects carry verified facts and one structured media array. Experiments carry protocol and paired metrics; writing and log use dated editorial fields.
 
-Routes: `/`, `/work/`, `/work/[slug]/`, `/writing/`, `/writing/[slug]/`, `/experiments/`, `/experiments/[slug]/`, `/about/`. Detail paths are generated from content IDs.
+Routes: `/`, `/work/`, `/work/[slug]/`, `/writing/`, `/writing/[slug]/`, `/experiments/`, `/experiments/[slug]/`, `/about/`, `/certificates/`. Detail paths are generated from content IDs.
 
 ## Components
 
-- BaseLayout: fonts, theme bootstrap, skip link, margin theme control, preview notice, footer. No global navigation bar.
+- BaseLayout: fonts, theme bootstrap, skip link, margin theme control, preview notice, local favicon links. No global navigation bar.
 - DocumentLayout: title, publication notice, accessible homepage link.
 - Constellation: original pencil paths and CSS-animated authentic logo stickers.
 - ProjectDrawer: semantic tabs, focus/hover preview, mouse navigation and explicit touch link.
@@ -34,3 +34,5 @@ The normal build rejects CONTENT_PREVIEW on Vercel, refreshes the public GitHub 
 ## Personal pages and technical articles
 
 `pages` stores About MDX with typed optional media and photo-slot groups. `/about/` renders that content. `AboutPhotos.astro` reads the named group; empty groups render nothing. All project routes use `ProjectArticleLayout.astro`; `caseStudy: true` selects narrative-only content with contextual `ProjectFigure.astro` figures referenced by stable media IDs. Brief projects retain their facts and gallery. `ReadingEnhancements.astro` is shared with writing. `src/lib/site.ts` stores the supplied public email and stable CV URL. `BaseLayout.astro` checks PDF presence at build time; no client fetch or fake file. Logs remain in their collection but have no public route.
+
+Optional project status is rendered by the shared `ProjectStatus` component. Certificate optional assets are resolved at build time by `certificate-assets.ts`, with missing references omitted rather than breaking the collection.

@@ -45,3 +45,14 @@ Certificates often contain more information than a portfolio needs: legal names,
 5. keep the private original outside this repository.
 
 `draft: true` is publication control, not access control. A file committed to a public GitHub repository is public even when no page links to it.
+
+
+## Optional or missing assets
+
+The existing certificate entries do not need to change. Optional keys should be omitted (or commented out), not left as blank YAML values. The generator template now comments them out by default, so a new draft passes the schema without invented URLs or files.
+
+A missing `pdf` or `imageFile` asset is omitted from the link list at build time. A missing `thumbnail` is omitted and the same certificate uses a text-only row. The title, issuer, date, description and external credential URL remain available. Build-time warnings identify stale asset references for the author; no fake image or credential is published. Restore the file and rebuild to restore its display.
+
+Thumbnail references retain the existing `../../assets/certificates/name.webp` syntax. The schema stores this optional reference as a string, and `src/lib/certificate-assets.ts` resolves it from the available Astro-imported images so a missing file does not abort content synchronization. PNG, JPG, JPEG, WebP and AVIF files in that folder are supported. Existing thumbnails remain build-optimized. Keep content entries directly in `src/content/certificates/` as produced by the generator.
+
+The Deep Learning Specialization is published from `src/content/certificates/deep-learning-specialization.md`, with its original PDF and an optimized WebP preview stored in the standard certificate locations above.
