@@ -264,4 +264,3 @@ This first path leaves several important topics for later: readiness and livenes
 - [ConfigMaps](https://kubernetes.io/docs/concepts/configuration/configmap/)
 - [Services](https://kubernetes.io/docs/concepts/services-networking/service/)
 
-<div class="callout"><strong>Publication check.</strong> This article remains a draft until I confirm the title, publication date, and final wording.</div>
