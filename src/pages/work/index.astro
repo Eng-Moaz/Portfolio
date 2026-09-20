@@ -4,4 +4,4 @@ import MediaGallery from '@/components/MediaGallery.astro';
 import {entries} from '@/lib/content';
 const projects=(await entries('projects')).sort((a,b)=>a.data.order-b.data.order);
 ---
-<DocumentLayout title="The project drawer" description="Software, learning systems, and the details between them."><div class="work-archive">{projects.map(p=><article><MediaGallery media={p.data.media} compact/><div><small>{p.data.language}</small><h2><a href={`/work/${p.id}/`}>{p.data.title} ↗</a></h2><p>{p.data.summary}</p></div></article>)}</div></DocumentLayout>
+<DocumentLayout title="The project drawer" description="Software, learning systems, and the details between them."><div class="work-archive">{projects.map(p=>{const hasMedia=p.data.media.some(m=>!m.sample);return <article class:list={{'work-archive--text':!hasMedia}}><MediaGallery media={p.data.media} compact/><div><small>{p.data.language}</small><h2><a href={`/work/${p.id}/`}>{p.data.title} ↗</a></h2><p>{p.data.summary}</p></div></article>})}</div></DocumentLayout>

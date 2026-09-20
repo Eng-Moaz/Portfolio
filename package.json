@@ -12,6 +12,7 @@
     "new:project": "node scripts/new-content.mjs project",
     "new:experiment": "node scripts/new-content.mjs experiment",
     "new:log": "node scripts/new-content.mjs log",
+    "new:certificate": "node scripts/new-content.mjs certificate",
     "github:refresh": "node scripts/github.mjs",
     "build:preview": "CONTENT_PREVIEW=true astro build",
     "image:prepare": "node scripts/prepare-image.mjs",

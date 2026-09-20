@@ -5,7 +5,7 @@ import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import {preview} from '@/lib/content';
-import {contactEmail,cvPath} from '@/lib/site';
+import {cvPath} from '@/lib/site';
 import Icon from '@/components/Icon.astro';
 import {existsSync,statSync} from 'node:fs';
 import {resolve} from 'node:path';
@@ -49,9 +49,19 @@ const noindex = preview || import.meta.env.VERCEL_ENV === 'preview';
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
-    <div class="page-tools">{hasCV && <a class="cv-link icon-link" href={cvPath} download><Icon name="download"/>Download CV</a>}<ThemeToggle /></div>
+    <div class="page-tools">{hasCV ? <a class="cv-link icon-link" href={cvPath} download><Icon name="download"/>Download CV</a> : import.meta.env.DEV && <span class="cv-link cv-link--disabled" aria-disabled="true" title={`Add ${cvPath} to enable this download`}><Icon name="download"/>CV coming soon</span>}<ThemeToggle /></div>
     {preview && <div class="preview-banner">Local preview · includes unpublished samples</div>}
     <slot />
-    <footer><p>A little corner of the internet.<br/><a href="/">Moaz Mohamed</a> · <a href="https://github.com/Eng-Moaz">GitHub ↗</a></p><div class="footer-note"><p class="handwriting">always room for one more idea.</p>{contactEmail && <a class="contact-link" href={`mailto:${contactEmail}`}>Say hello →</a>}</div></footer>
+    <script is:inline>
+      for (const link of document.querySelectorAll('a[href]')) {
+        const href = link.getAttribute('href');
+        if (!href) continue;
+        const destination = new URL(href, location.href);
+        if ((destination.protocol === 'http:' || destination.protocol === 'https:') && destination.origin !== location.origin) {
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+        }
+      }
+    </script>
   </body>
 </html>

@@ -5,12 +5,12 @@ interface Props { projects:CollectionEntry<'projects'>[] }
 const {projects}=Astro.props;
 ---
 <section class="work-section" id="work" aria-labelledby="work-title">
-<div class="section-heading-row"><h2 id="work-title">Things I've been building<span class="dot">.</span></h2><a class="handwriting" href="/work/">the whole drawer ↗</a></div>
+<div class="section-heading-row"><h2 id="work-title">Things I've been building</h2><a class="handwriting" href="/work/">the whole drawer ↗</a></div>
 <div class="project-drawer" data-project-drawer>
 <div class="project-tabs" role="tablist" aria-label="Selected projects" aria-orientation="vertical">
 {projects.map((p,i)=><button type="button" role="tab" id={`project-tab-${i}`} aria-controls={`project-panel-${i}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-project-tab data-href={`/work/${p.id}/`}><span>{p.data.title}</span><small>{p.data.language}</small><span class="tab-arrow" aria-hidden="true">↗</span></button>)}
 </div>
-<div class="project-panels">{projects.map((p,i)=><article class="project-panel" role="tabpanel" id={`project-panel-${i}`} aria-labelledby={`project-tab-${i}`} hidden={i!==0} data-project-panel><MediaGallery media={p.data.media} compact/><div class="project-copy"><p class="handwriting">{p.data.note}</p><h3>{p.data.title}</h3><p>{p.data.summary}</p><a class="project-link" href={`/work/${p.id}/`}>Open project →</a></div></article>)}</div>
+<div class="project-panels">{projects.map((p,i)=>{const hasMedia=p.data.media.some(m=>!m.sample);return <article class:list={['project-panel',{'project-panel--text':!hasMedia}]} role="tabpanel" id={`project-panel-${i}`} aria-labelledby={`project-tab-${i}`} hidden={i!==0} data-project-panel><MediaGallery media={p.data.media} compact/><div class="project-copy"><p class="handwriting">{p.data.note}</p><h3>{p.data.title}</h3><p>{p.data.summary}</p><a class="project-link" href={`/work/${p.id}/`}>Open project →</a></div></article>})}</div>
 </div></section>
 <script>
 document.querySelectorAll<HTMLElement>('[data-project-drawer]').forEach(drawer=>{

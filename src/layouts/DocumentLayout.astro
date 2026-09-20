@@ -3,4 +3,4 @@ import BaseLayout from './BaseLayout.astro';
 interface Props {title:string;description?:string;sample?:boolean;draft?:boolean;}
 const {title,description,sample,draft}=Astro.props;
 ---
-<BaseLayout title={`${title} — Moaz Mohamed`} description={description}><main id="main" class="document"><a class="back-link" href="/">← Back to the main page</a><header class="document-title">{(sample||draft)&&<p class="content-label">{sample?'Sample content · design demonstration, not authored or published by Moaz':'Unpublished draft'}</p>}<h1>{title}</h1>{description&&<p class="document-deck">{description}</p>}</header><slot/></main></BaseLayout>
+<BaseLayout title={`${title} · Moaz Mohamed`} description={description}><main id="main" class="document"><a class="back-link" href="/">← Back to the main page</a><header class="document-title">{(sample||draft)&&<p class="content-label">{sample?'Sample content · design demonstration, not authored or published by Moaz':'Unpublished draft'}</p>}<h1>{title}</h1>{description&&<p class="document-deck">{description}</p>}</header><slot/></main></BaseLayout>

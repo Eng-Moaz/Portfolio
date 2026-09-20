@@ -3,29 +3,93 @@ title: A little more about me
 description: Away from the code, a few things I spend time with.
 draft: false
 sample: false
-media: []
-photoSlots:
+media:
+  - group: school
+    image: ../../assets/about/thanawya.jpg
+    alt: School ranking sheet showing Moaz listed first in his class
+    caption: The school ranking sheet from my Thanaweya Amma year.
+    kind: photo
+    width: 738
+    height: 1024
+  - group: university
+    image: ../../assets/about/engineering_faculty.jpg
+    alt: Engineering drawing tubes and supplies being carried across a university hallway
+    caption: Carrying the tools of the trade at the Faculty of Engineering.
+    kind: photo
+    width: 1600
+    height: 1200
+  - group: environment
+    image: ../../assets/about/neovim.jpg
+    alt: A dark desktop setup with Go code open in Neovim
+    caption: Go, Neovim, and a development environment I can make my own.
+    kind: photo
+    width: 1600
+    height: 1200
+  - group: chess
+    image: ../../assets/about/chess.jpg
+    alt: Moaz's Chess.com profile showing blitz, bullet, rapid, and daily ratings
+    caption: A snapshot from the years I spent chasing better moves.
+    kind: screenshot
+    width: 1586
+    height: 1110
   - group: chinese
-    caption: A page from my Chinese-learning journey
+    image: ../../assets/about/chinese1.jpg
+    alt: Certificate for completing an HSK 2 Chinese language course at the Confucius Institute of Suez Canal University
+    caption: My certificate from an HSK 2 course at the Confucius Institute.
+    kind: photo
+    width: 1200
+    height: 1600
   - group: chinese
-    caption: Room for a study-day snapshot
+    image: ../../assets/about/chinese2.jpg
+    alt: An open Chinese language workbook with a blue pen resting across the page
+    caption: A page from the work behind learning a new language.
+    kind: photo
+    width: 1200
+    height: 1600
+photoSlots: []
 ---
 
 import AboutPhotos from '../../components/AboutPhotos.astro';
 
 <p className="handwriting about-hello">Hello again. I'm Moaz.</p>
 
-There’s more to me than the projects on the main page. Here are a couple of things I enjoy spending time on outside programming.
+There’s more to me than the projects on the main page. This is the longer path into the things I build, the tools I care about, and the interests I return to when I step away from code.
+
+## School and Thanaweya Amma
+
+During Thanaweya Amma, I was the top student at my school and ranked 11th in my governorate. It is an early chapter I want to keep here because it sits before the engineering projects and explains something quieter about me: I have always enjoyed the long process of learning something properly.
+
+<AboutPhotos group="school" />
+
+{/* Before deploying this paragraph, verify the exact English wording, governorate, year, and what personal information is visible in the ranking photograph. Do not add the school name or score unless Moaz explicitly supplies them. */}
+
+## Studying Computer Engineering
+
+That path led me to Computer Engineering at Suez Canal University. University is where my interest in software became less abstract: not only using systems, but asking how their layers fit together and how I could build them myself.
+
+<AboutPhotos group="university" />
+
+{/* Add a more personal university memory here when Moaz supplies one; do not invent achievements or societies. */}
+
+## Linux, Neovim, and making the tools mine
+
+I enjoy Linux and Neovim partly because they invite curiosity. My development environment is something I can open up, understand, and shape around the way I work. Adjusting a keybinding, reading a configuration file, or tracing why a tool behaves a certain way is not separate from programming for me. It is another form of building.
+
+That setup will keep changing, which is exactly why I want to leave room for it here rather than freeze it into a list of technologies.
+
+<AboutPhotos group="environment" />
 
 ## Across the chessboard
 
-Chess has taken up a good part of my time: playing, learning, and trying to improve. My ratings are 2200+ in bullet and blitz, and 2100+ in rapid on Chess.com.
+Chess has taken up a good part of my time: playing, learning, and trying to improve. I like the way a position rewards patience, pattern recognition, and the willingness to revisit a decision that looked obvious a move earlier.
 
-[Find me across the board ↗](https://www.chess.com/member/moaz_ashour)
+<AboutPhotos group="chess" />
+
+<a className="profile-link" href="https://www.chess.com/member/moaz_ashour">Find me on Chess.com ↗ <span aria-hidden="true">♟</span></a>
 
 ## Learning Chinese
 
-I’m learning Chinese and have just started HSK 3. This is a small space for pictures and notes from that journey as it continues.
+I’m learning Chinese. This is a small space for photographs, course material, certificates, and observations from that journey as it continues. I will add specific proficiency or exam claims only when I am ready to verify and publish them.
 
 <AboutPhotos group="chinese" />
 

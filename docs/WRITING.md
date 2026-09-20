@@ -6,7 +6,7 @@ The site accepts ordinary Markdown in `src/content/writing/`. Nothing watches, i
 
 1. Copy a selected note to `src/content/writing/a-readable-slug.md`, or start with `npm run new:post -- a-readable-slug "A readable title"` and paste the body.
 2. Add or merge the frontmatter below. Unknown Obsidian metadata does not become article text, but remove private metadata before committing the file.
-3. Copy selected attachments to `public/images/writing/a-readable-slug/` and update image paths. These public files are deployed even while the article is a draft; only put publishable attachments there.
+3. Copy selected images to `src/assets/writing/a-readable-slug/` and update image paths. Only put publishable attachments in the repository; draft content is still visible in public Git history.
 4. Convert wikilinks and embeds as described below. Run `npm run dev -- --host 0.0.0.0 --port 4322` and inspect `/writing/a-readable-slug/` in both themes.
 5. Run `npm run check`. When the article is genuinely ready, set `draft: false`. Run `npm run build` and inspect the output before committing or deploying through your own approval process.
 
@@ -32,7 +32,7 @@ Required: title, description, date. A missing draft flag defaults to true; use a
 | Fenced code | Shiki highlighting, language label, copy button, horizontal scrolling | Name the language after the opening fence |
 | Tables, task lists, strikethrough | Astro's GFM Markdown | Check wide tables on mobile |
 | Ordinary Markdown links | Supported | Use public route URLs, not vault file paths |
-| Images | Standard Markdown images or HTML figures | Copy chosen files and use `/images/writing/...` URLs |
+| Images | Standard Markdown images | Copy chosen files to `src/assets/writing/...` and use a relative `../../assets/writing/...` path so Astro optimizes them |
 | `[[Note]]`, `[[Note\|label]]` | Not resolved | Convert to `[label](/writing/note-slug/)` |
 | `[[Note#Heading]]` | Not resolved | Convert to `[label](/writing/note-slug/#heading-id)` and verify generated heading IDs |
 | `![[image.png]]` | Not resolved | Convert to `![Meaningful description](/images/writing/note-slug/image.png)` |
@@ -54,7 +54,7 @@ Prefer absolute site-relative paths. A Markdown filename in the vault is not aut
 ```md
 Read [the layer note](/writing/docker-image-layers/).
 
-![Layer cache illustration](/images/writing/my-note/layers.webp)
+![Layer cache illustration](../../assets/writing/my-note/layers.webp)
 ```
 
 The example layer article is a draft, so a **published** article must not link to it until the target has been replaced with approved published content. The production audit catches missing local targets. Link filenames and URL paths are case-sensitive on Vercel.
@@ -70,7 +70,9 @@ For captions and reserved image space:
 </figure>
 ```
 
-Use optimized images. The project image helper is documented in AUTHORING.md; writing images can also be exported as appropriately sized WebP files. Do not copy a whole attachments directory automatically.
+Plain HTML `<img>` uses a public URL and does not receive Astro optimization. Prefer ordinary Markdown image syntax for local `src/assets` images. Use HTML only when a caption is essential and you have deliberately imported an image through MDX. Do not copy a whole attachments directory automatically.
+
+The first imported note is `src/content/writing/getting-started-with-kubernetes.md`. Its source remains untouched at the external Obsidian path; only this selected article was copied and transformed. It stays `draft: true` until Moaz confirms the title, date, and final text.
 
 ## Code inserts
 

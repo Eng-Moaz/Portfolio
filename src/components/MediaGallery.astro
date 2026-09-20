@@ -1,11 +1,12 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { preview } from '@/lib/content';
+import MediaAsset from './MediaAsset.astro';
 interface Props { media: CollectionEntry<'projects'>['data']['media']; compact?:boolean; }
 const {media,compact=false}=Astro.props;
 const visible=media.filter(m=>preview || !m.sample);
 const images=compact ? [...visible].sort((a,b)=>Number(b.featured)-Number(a.featured)).slice(0,2) : visible;
 ---
-<div class:list={['media-gallery',{ 'media-gallery--compact':compact }]}>
-{images.length ? images.map(m=><figure><img src={m.src} alt={m.alt} width={m.width} height={m.height} loading="lazy" decoding="async"/><figcaption>{compact ? (m.sample ? 'Visual placeholder · notebook study' : `Repository artifact · ${m.kind}`) : m.caption}{!compact && m.sample && !m.caption?.includes('placeholder') && ' · Visual placeholder'}</figcaption></figure>) : <div class="media-empty"><span class="handwriting">room for the evidence</span><p>Project images will appear here.</p></div>}
-</div>
+{images.length>0&&<div class:list={['media-gallery',{ 'media-gallery--compact':compact }]}>
+{images.map(m=><figure><MediaAsset src={m.src} image={m.image} alt={m.alt} width={m.width} height={m.height}/><figcaption>{compact ? (m.sample ? 'Visual placeholder · notebook study' : `Repository artifact · ${m.kind}`) : m.caption}{!compact && m.sample && !m.caption?.includes('placeholder') && ' · Visual placeholder'}</figcaption></figure>)}
+</div>}
